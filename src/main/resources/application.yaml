@@ -1,0 +1,17 @@
+bot:
+  username: RateYourDayBot
+  token: ${BOT_TOKEN}
+  welcomeMessage: "приуєт"
+spring:
+  datasource:
+#    url: jdbc:postgresql://localhost:32432/rhapsody
+    url: jdbc:postgresql://ec2-54-73-22-169.eu-west-1.compute.amazonaws.com:5432/d164iknlksavam
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+# jdbc:postgresql://ec2-54-73-22-169.eu-west-1.compute.amazonaws.com:5432/d164iknlksavam?user=yrmjehoxpyzyna&password=c6d07ff9c578a9d5d74a6a7a494789f9fa8177dce87ccba8d4a93771b3f0c101
