@@ -51,10 +51,9 @@ public class RateDayJob {
         var localNow = LocalDateTime.now();
         var zonedNow = ZonedDateTime.of(localNow, SYSTEM_ZONE_ID);
         var zonedNextTarget = zonedNow.plusHours(1).withMinute(0).withSecond(0).withNano(0);
+        var delay = Duration.between(zonedNow, zonedNextTarget).getSeconds() + 1;
 
-        var duration = Duration.between(zonedNow, zonedNextTarget);
-        log.info("Ukrainian Time: {}, zonedNextTarget {}, run next in {} seconds}", zonedNow, zonedNextTarget, duration);
-
-        return duration.getSeconds();
+        log.info("Ukrainian Time: {}, zonedNextTarget {}, execute next task in {} seconds}", zonedNow, zonedNextTarget, delay);
+        return delay;
     }
 }
