@@ -13,15 +13,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.Serializable;
 
 @Slf4j
+@Getter
 @Component
 public class Bot extends TelegramLongPollingBot {
 
     @Value("${bot.token}")
-    @Getter
     private String botToken;
 
     @Value("${bot.username}")
-    @Getter
     private String botUsername;
 
     private final UpdateReceiver updateReceiver;

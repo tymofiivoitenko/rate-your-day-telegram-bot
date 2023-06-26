@@ -60,7 +60,9 @@ public class RateDayJobHelper {
         var inlineKeyboardButtonsRow = List.of(
                 createInlineKeyboardButton("1", RATE_DAY + currentDate + SCORE + "1"),
                 createInlineKeyboardButton("2", RATE_DAY + currentDate + SCORE + "2"),
-                createInlineKeyboardButton("3", RATE_DAY + currentDate + SCORE + "3"));
+                createInlineKeyboardButton("3", RATE_DAY + currentDate + SCORE + "3"),
+                createInlineKeyboardButton("4", RATE_DAY + currentDate + SCORE + "4"),
+                createInlineKeyboardButton("5", RATE_DAY + currentDate + SCORE + "5"));
         inlineKeyboardMarkup.setKeyboard(List.of(inlineKeyboardButtonsRow));
         var response = createMessageTemplate(person, "Оцініть ваш день...");
         response.setReplyMarkup(inlineKeyboardMarkup);

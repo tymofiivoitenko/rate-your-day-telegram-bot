@@ -17,13 +17,13 @@ public class PersonService {
     private final PersonDao dao;
 
     public Person getOrCreate(Message message) {
-        Long chatId = message.getFrom().getId();
+        var chatId = message.getFrom().getId();
 
         return getOrCreate(chatId, message.getFrom());
     }
 
     public Person getOrCreate(CallbackQuery callbackQuery) {
-        Long chatId = callbackQuery.getFrom().getId();
+        var chatId = callbackQuery.getFrom().getId();
 
         return getOrCreate(chatId, callbackQuery.getFrom());
     }
@@ -35,10 +35,8 @@ public class PersonService {
     private Person getOrCreate(Long chatId, User user) {
         return this.dao.getByChatId(chatId)
                 .orElseGet(() -> {
-                    String firstName = user.getFirstName();
-                    String lastName = user.getLastName();
-                    String userName = user.getUserName();
-                    return this.dao.save(new Person(chatId, firstName, lastName, userName));
+                    var person = new Person(chatId, user.getFirstName(), user.getLastName(), user.getUserName());
+                    return this.dao.save(person);
                 });
     }
 }
