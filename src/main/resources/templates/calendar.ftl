@@ -1,37 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'/>
     <style>
+
+        h2.month {
+            color: orange;
+            text-align: center;
+            font-size: 700%;
+            font-family: Montserrat, sans-serif;
+        }
         table {
             border-collapse: collapse;
             background: white;
             color: black;
+            table-layout: fixed;
             width: 100%;
         }
 
         th {
+            font-family: 'Montserrat';
             color: white;
             background: purple;
             text-align: center;
-            font-size: 300%;
+            font-size: 400%;
             height: 240px;
         }
 
         td {
+            font-family: 'Montserrat';
             text-align: center;
-            font-size: 300%;
+            font-size: 400%;
             font-weight: bold;
             height: 240px;
         }
     </style>
 </head>
 <body>
-<h2 align="center" style="color: orange; text-align:center; font-size: 500%">
+<h2 class="month">
     ${calendar.monthName} ${calendar.year}
 
 </h2>
 
-<table bgcolor="lightgrey" align="center" cellspacing="21" cellpadding="21">
+<table bgcolor="lightgrey" cellspacing="21" cellpadding="21">
 
     <thead>
     <tr>

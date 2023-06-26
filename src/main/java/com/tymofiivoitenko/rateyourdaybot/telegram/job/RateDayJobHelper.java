@@ -34,7 +34,7 @@ public class RateDayJobHelper {
     private final RateSettingsService rateSettingsService;
 
 
-    public void sendMessages() {
+    public void sendRateSurveys() {
         // TODO SAVE DATE IN UTC FORMAT
         var now = LocalDateTime.now();
         var currentHour = ZonedDateTime.of(now, SYSTEM_ZONE_ID).getHour();

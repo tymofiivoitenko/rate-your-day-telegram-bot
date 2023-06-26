@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RateDayJob {
 
-    public static final int UKRAINE_OFFSET = 3;
+    public static final int UKRAINE_UTC_OFFSET = 3;
 
-    public static final ZoneId SYSTEM_ZONE_ID = ZoneOffset.ofHours(UKRAINE_OFFSET);
+    public static final ZoneId SYSTEM_ZONE_ID = ZoneOffset.ofHours(UKRAINE_UTC_OFFSET);
 
     private final RateDayJobHelper helper;
 
@@ -37,9 +37,9 @@ public class RateDayJob {
        executeNext();
     }
 
-    public void executeNext() {
+    private void executeNext() {
         Runnable task = () -> {
-            helper.sendMessages();
+            helper.sendRateSurveys();
             executeNext();
         };
         var delay = calculateDelay();
@@ -53,7 +53,7 @@ public class RateDayJob {
         var zonedNextTarget = zonedNow.plusHours(1).withMinute(0).withSecond(0).withNano(0);
         var delay = Duration.between(zonedNow, zonedNextTarget).getSeconds() + 1;
 
-        log.info("Ukrainian Time: {}, zonedNextTarget {}, execute next task in {} seconds}", zonedNow, zonedNextTarget, delay);
+        log.info("Send RateServeys in {} seconds", delay);
         return delay;
     }
 }
