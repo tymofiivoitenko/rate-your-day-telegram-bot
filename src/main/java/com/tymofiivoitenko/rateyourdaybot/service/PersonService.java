@@ -28,6 +28,10 @@ public class PersonService {
         return getOrCreate(chatId, callbackQuery.getFrom());
     }
 
+    public List<Person> findAll() {
+        return this.dao.findAll();
+    }
+
     public List<Person> findByIdIn(List<Integer> ids) {
         return this.dao.findByIdIn(ids);
     }
