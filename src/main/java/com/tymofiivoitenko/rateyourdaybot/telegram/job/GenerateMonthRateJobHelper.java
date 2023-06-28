@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.tymofiivoitenko.rateyourdaybot.model.calendar.CalendarScoreColour.GREY;
-import static com.tymofiivoitenko.rateyourdaybot.telegram.job.RateDayJob.SYSTEM_ZONE_ID;
+import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.SYSTEM_ZONE_ID;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createPhotoTemplate;
 
 

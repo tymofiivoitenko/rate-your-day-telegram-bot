@@ -14,18 +14,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.SYSTEM_ZONE_ID;
+
 @Slf4j
 @Component
 public class RateDayJob {
 
-    public static final int UKRAINE_UTC_OFFSET = 3;
-
-    public static final ZoneId SYSTEM_ZONE_ID = ZoneOffset.ofHours(UKRAINE_UTC_OFFSET);
-
     private final RateDayJobHelper helper;
 
     private final ScheduledExecutorService executorService;
-
 
     public RateDayJob(RateDayJobHelper helper) {
         this.helper = helper;

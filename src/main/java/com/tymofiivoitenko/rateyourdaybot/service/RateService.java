@@ -13,12 +13,24 @@ public class RateService {
 
     private final RateDao dao;
 
-    public Rate save(Rate rate) {
-        return this.dao.save(rate);
+    // UPSERT while BETA
+    public Rate upsert(Rate rate) {
+        var rateToSave = this.dao.getRateByPersonIdAndDate(rate.getPersonId(), rate.getDate())
+                .map(existingRate -> {
+                    existingRate.setScore(rate.getScore());
+                    return existingRate;
+                })
+                .orElse(rate);
+
+        return this.dao.save(rateToSave);
     }
 
-    public List<Rate> getRatesByPersonIdAndMonth(Integer pesonId, String yearAndMonth) {
-        return this.dao.getRatesByPersonIdAndMonth(pesonId, yearAndMonth);
+    public List<Rate> getRatesByPersonIdAndMonth(Integer personId, String yearAndMonth) {
+        return this.dao.getRatesByPersonIdAndMonth(personId, yearAndMonth);
+    }
+
+    public boolean isFirstRateSurvey(Integer personId) {
+        return this.dao.isFirstRateSurvey(personId);
     }
 
 }

@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+  jpa:
+    show-sql: true
+  cloud:
+    gcp:
+      sql:
+        enabled: false

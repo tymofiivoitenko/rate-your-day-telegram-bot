@@ -16,10 +16,11 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.IntStream;
 
-import static com.tymofiivoitenko.rateyourdaybot.telegram.handler.RateDayHandler.RATE_DAY;
-import static com.tymofiivoitenko.rateyourdaybot.telegram.handler.RateDayHandler.SCORE;
-import static com.tymofiivoitenko.rateyourdaybot.telegram.job.RateDayJob.SYSTEM_ZONE_ID;
+import static com.tymofiivoitenko.rateyourdaybot.telegram.handler.RateDayHandler.RATE_DAY_KEY;
+import static com.tymofiivoitenko.rateyourdaybot.telegram.handler.RateDayHandler.SCORE_KEY;
+import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.SYSTEM_ZONE_ID;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createInlineKeyboardButton;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createMessageTemplate;
 
@@ -27,6 +28,7 @@ import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createMessage
 @Component
 @AllArgsConstructor
 public class RateDayJobHelper {
+    private static final String RATE_DAY_MESSAGE = "Як прошов твій день?";
     private static final String DATE_PATTERN_FORMAT = "yyyy-MM-dd";
 
     private final Bot bot;
@@ -51,20 +53,19 @@ public class RateDayJobHelper {
                 .forEach(message -> this.bot.executeWithExceptionCheck(message));
     }
 
-    private SendMessage createRateKeyBoardMessage(Person person, LocalDateTime now) {
-        var currentDate = DateTimeFormatter.ofPattern(DATE_PATTERN_FORMAT)
+    public static SendMessage createRateKeyBoardMessage(Person person, LocalDateTime now) {
+        var zonedDate = DateTimeFormatter.ofPattern(DATE_PATTERN_FORMAT)
                 .withZone(SYSTEM_ZONE_ID)
                 .format(now);
 
         var inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        var inlineKeyboardButtonsRow = List.of(
-                createInlineKeyboardButton("1", RATE_DAY + currentDate + SCORE + "1"),
-                createInlineKeyboardButton("2", RATE_DAY + currentDate + SCORE + "2"),
-                createInlineKeyboardButton("3", RATE_DAY + currentDate + SCORE + "3"),
-                createInlineKeyboardButton("4", RATE_DAY + currentDate + SCORE + "4"),
-                createInlineKeyboardButton("5", RATE_DAY + currentDate + SCORE + "5"));
+        var inlineKeyboardButtonsRow = IntStream.rangeClosed(1, 5).boxed()
+                .map(String::valueOf)
+                .map(score -> createInlineKeyboardButton(score, RATE_DAY_KEY + zonedDate + SCORE_KEY + score))
+                .toList();
+
         inlineKeyboardMarkup.setKeyboard(List.of(inlineKeyboardButtonsRow));
-        var response = createMessageTemplate(person, "Оцініть ваш день...");
+        var response = createMessageTemplate(person, RATE_DAY_MESSAGE);
         response.setReplyMarkup(inlineKeyboardMarkup);
 
         return response;

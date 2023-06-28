@@ -16,15 +16,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.SYSTEM_ZONE_ID;
+
 
 @Slf4j
 @Component
 @AllArgsConstructor
 public class GenerateMonthRateJob {
-
-    public static final int UKRAINE_UTC_OFFSET = 3;
-
-    public static final ZoneId SYSTEM_ZONE_ID = ZoneOffset.ofHours(UKRAINE_UTC_OFFSET);
 
     private final GenerateMonthRateJobHelper helper;
 
@@ -58,8 +56,8 @@ public class GenerateMonthRateJob {
         var zonedNextTarget = zonedNow.plusMonths(1).withDayOfMonth(1).withHour(9).withMinute(0).withSecond(0).withNano(0);
         var delay = Duration.between(zonedNow, zonedNextTarget).getSeconds() + 1;
 
-        log.info("Send MonthRates in {} seconds", delay);
+        log.info("Current time {}, send MonthRates in {} seconds", zonedNow, delay);
         return delay;
     }
-
 }
+
