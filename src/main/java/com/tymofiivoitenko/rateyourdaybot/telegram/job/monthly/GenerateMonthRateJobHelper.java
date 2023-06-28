@@ -1,4 +1,4 @@
-package com.tymofiivoitenko.rateyourdaybot.telegram.job;
+package com.tymofiivoitenko.rateyourdaybot.telegram.job.monthly;
 
 
 import com.tymofiivoitenko.rateyourdaybot.model.calendar.CalendarScoreColour;
@@ -8,6 +8,7 @@ import com.tymofiivoitenko.rateyourdaybot.model.rate.Rate;
 import com.tymofiivoitenko.rateyourdaybot.service.PersonService;
 import com.tymofiivoitenko.rateyourdaybot.service.RateService;
 import com.tymofiivoitenko.rateyourdaybot.telegram.Bot;
+import com.tymofiivoitenko.rateyourdaybot.telegram.job.GenerateViewJobHelper;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import lombok.AllArgsConstructor;
@@ -15,18 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.w3c.dom.Document;
-import org.xhtmlrenderer.swing.Java2DRenderer;
 import org.xml.sax.SAXException;
 
-import javax.imageio.ImageIO;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.annotation.PostConstruct;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,13 +40,9 @@ import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createPhotoTe
 @Slf4j
 @Component
 @AllArgsConstructor
-public class GenerateMonthRateJobHelper {
+public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
 
-    private static final Integer CALENDAR_IMAGE_WIDTH = 2048;
-
-    private static final Integer CALENDAR_IMAGE_HEIGHT = -1;
-
-    private static final String CALENDAR_TEMPLATE_NAME = "calendar.ftl";
+    private static final String TEMPLATE_NAME = "rates-month-view.ftl";
 
     private static final String YEAR_MONTH_DATE_FORMAT = "yyyy-MM";
 
@@ -63,6 +53,13 @@ public class GenerateMonthRateJobHelper {
     private final Bot bot;
 
     private final Configuration freemarkerConfig;
+
+    @PostConstruct
+    public void init(){
+        var person = this.personService.findByIdIn(List.of(1)).get(0);
+        var month = LocalDateTime.now().toLocalDate().minusMonths(0).withDayOfMonth(1);
+        sendMonthRate(person, month);
+    }
 
     public void sendMonthRates() {
         var persons = this.personService.findAll();
@@ -77,7 +74,7 @@ public class GenerateMonthRateJobHelper {
         }
     }
 
-    public void sendMonthRate(Person person, LocalDate month) {
+    private void sendMonthRate(Person person, LocalDate month) {
         var yearAndMonth = DateTimeFormatter.ofPattern(YEAR_MONTH_DATE_FORMAT)
                 .withZone(SYSTEM_ZONE_ID)
                 .format(month);
@@ -86,7 +83,7 @@ public class GenerateMonthRateJobHelper {
         try {
             var monthRateView = createMonthRateView(rates, month);
             var html = createByTemplate(monthRateView);
-            var photoTemplate = createPhotoTemplate(person, generateInputStream(html));
+            var photoTemplate = createPhotoTemplate(person, generateInputStreamFromHtml(html));
 
             bot.execute(photoTemplate);
         } catch (IOException | TelegramApiException | TemplateException | ParserConfigurationException |
@@ -97,7 +94,7 @@ public class GenerateMonthRateJobHelper {
     }
 
     private String createByTemplate(MonthRateView monthRateView) throws IOException, TemplateException {
-        var template = this.freemarkerConfig.getTemplate(CALENDAR_TEMPLATE_NAME, "UTF-8");
+        var template = this.freemarkerConfig.getTemplate(TEMPLATE_NAME, "UTF-8");
         var model = new HashMap<>() {{
             put("calendar", monthRateView);
         }};
@@ -147,20 +144,6 @@ public class GenerateMonthRateJobHelper {
         }
 
         return ratesToDays;
-    }
-
-    private InputStream generateInputStream(String html) throws ParserConfigurationException, IOException, SAXException {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                .parse(new ByteArrayInputStream(html.getBytes()));
-
-        Java2DRenderer imageRenderer = new Java2DRenderer(doc, CALENDAR_IMAGE_WIDTH, CALENDAR_IMAGE_HEIGHT);
-        imageRenderer.setBufferedImageType(BufferedImage.TYPE_INT_RGB);
-
-        BufferedImage image = imageRenderer.getImage();
-        var os = new ByteArrayOutputStream();
-
-        ImageIO.write(image, "jpeg", os);
-        return new ByteArrayInputStream(os.toByteArray());
     }
 
 }

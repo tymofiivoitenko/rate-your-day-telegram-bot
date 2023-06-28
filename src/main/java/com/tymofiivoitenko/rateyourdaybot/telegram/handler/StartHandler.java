@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.tymofiivoitenko.rateyourdaybot.telegram.handler.RateSettingsHandler.createRateSettingsTemplate;
-import static com.tymofiivoitenko.rateyourdaybot.telegram.job.RateDayJobHelper.createRateKeyBoardMessage;
+import static com.tymofiivoitenko.rateyourdaybot.telegram.job.daily.RateDayJobHelper.createRateKeyBoardMessage;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.SYSTEM_ZONE_ID;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createMessageTemplate;
 

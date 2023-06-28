@@ -5,6 +5,7 @@ import com.tymofiivoitenko.rateyourdaybot.model.rate.Rate;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -27,6 +28,10 @@ public class RateService {
 
     public List<Rate> getRatesByPersonIdAndMonth(Integer personId, String yearAndMonth) {
         return this.dao.getRatesByPersonIdAndMonth(personId, yearAndMonth);
+    }
+
+    public List<Rate> getRatesByPersonIdBetweenDates(Integer personId, LocalDate startDate, LocalDate endDate) {
+        return this.dao.getRatesByPersonIdBetweenDates(personId, startDate, endDate);
     }
 
     public boolean isFirstRateSurvey(Integer personId) {

@@ -26,6 +26,16 @@ public interface RateDao extends JpaRepository<Rate, Integer> {
             SELECT *
             FROM rate
             WHERE person_id = :personId
+              AND date >= :startDate
+              AND date <= :endDate
+            """, nativeQuery = true
+    )
+    List<Rate> getRatesByPersonIdBetweenDates(Integer personId, LocalDate startDate, LocalDate endDate);
+
+    @Query(value = """
+            SELECT *
+            FROM rate
+            WHERE person_id = :personId
               AND date = :date
             """, nativeQuery = true
     )

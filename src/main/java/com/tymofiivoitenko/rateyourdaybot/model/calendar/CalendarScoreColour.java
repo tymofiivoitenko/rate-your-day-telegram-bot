@@ -11,7 +11,7 @@ public enum CalendarScoreColour {
     ORANGE("orange", 2),
     YELLOW("#f6f667", 3),
     CHARTREUSE("#B7FF00", 4),
-    GREEN("#85e085", 5);
+    GREEN("#4ED93A", 5);
 
     String hexCode;
     Integer score;

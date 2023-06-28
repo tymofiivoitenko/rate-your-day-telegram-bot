@@ -1,4 +1,4 @@
-package com.tymofiivoitenko.rateyourdaybot.telegram.job;
+package com.tymofiivoitenko.rateyourdaybot.telegram.job.daily;
 
 import com.tymofiivoitenko.rateyourdaybot.model.person.Person;
 import com.tymofiivoitenko.rateyourdaybot.model.rate.RateSettings;

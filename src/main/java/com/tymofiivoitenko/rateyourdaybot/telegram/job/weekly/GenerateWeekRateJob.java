@@ -1,42 +1,48 @@
-package com.tymofiivoitenko.rateyourdaybot.telegram.job;
+package com.tymofiivoitenko.rateyourdaybot.telegram.job.weekly;
 
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.SYSTEM_ZONE_ID;
 
+
 @Slf4j
 @Component
-public class RateDayJob {
+@AllArgsConstructor
+public class GenerateWeekRateJob {
 
-    private final RateDayJobHelper helper;
+    private final GenerateWeekRateJobHelper helper;
 
     private final ScheduledExecutorService executorService;
 
-    public RateDayJob(RateDayJobHelper helper) {
+
+    @Autowired
+    public GenerateWeekRateJob(GenerateWeekRateJobHelper helper) {
         this.helper = helper;
         this.executorService = Executors.newScheduledThreadPool(1);
     }
 
     @PostConstruct
     public void init() {
-       executeNext();
+        executeNext();
     }
 
     private void executeNext() {
         Runnable task = () -> {
-            helper.sendRateSurveys();
+            helper.sendWeekRateViews();
             executeNext();
         };
         var delay = calculateDelay();
@@ -47,10 +53,11 @@ public class RateDayJob {
     private long calculateDelay() {
         var localNow = LocalDateTime.now();
         var zonedNow = ZonedDateTime.of(localNow, SYSTEM_ZONE_ID);
-        var zonedNextTarget = zonedNow.plusHours(1).withMinute(0).withSecond(0).withNano(0);
+        var zonedNextTarget = zonedNow.with(TemporalAdjusters.next(DayOfWeek.MONDAY)).withHour(9).withMinute(0).withSecond(1);
         var delay = Duration.between(zonedNow, zonedNextTarget).getSeconds() + 1;
 
-        log.info("Send RateServeys in {} seconds", delay);
+        log.info("Current time {}, send WeekRates in {} seconds", zonedNow, delay);
         return delay;
     }
 }
+
