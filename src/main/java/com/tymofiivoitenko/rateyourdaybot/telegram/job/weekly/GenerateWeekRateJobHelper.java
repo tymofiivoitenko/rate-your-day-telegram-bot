@@ -96,6 +96,7 @@ public class GenerateWeekRateJobHelper extends GenerateViewJobHelper {
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
     }
 
+    // TODO: Refactor
     private List<Map.Entry<String, String>> generateRatesToDays(List<Rate> rates, LocalDate date) {
         List<Map.Entry<String, String>> ratesToDays = new ArrayList<>();
         var dayToColour = rates.stream()

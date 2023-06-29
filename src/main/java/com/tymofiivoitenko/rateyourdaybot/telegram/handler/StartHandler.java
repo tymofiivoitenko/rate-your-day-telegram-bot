@@ -22,7 +22,7 @@ import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createMessage
 @Component
 public class StartHandler implements Handler {
 
-    private static final String WELCOME_MESSAGE_MORNING_HOURS = "Рада познайомитись. Росскажеш мені як пройшов твій день? Хоча, краще вже ввечері перепитаю.";
+    private static final String WELCOME_MESSAGE_MORNING_HOURS = "Рада познайомитись. Розкажеш мені як пройшов твій день? Хоча, краще вже ввечері перепитаю.";
     private static final String WELCOME_MESSAGE_LATE_NIGHT_HOURS = "Рада познайомитись. Вже так піздно..";
 
     @Override

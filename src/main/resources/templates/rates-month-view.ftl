@@ -41,7 +41,7 @@
 </head>
 <body>
 <h2 class="month">
-    ${calendar.monthName} ${calendar.year}
+    ${monthName} ${year}
 
 </h2>
 
@@ -73,7 +73,7 @@
     </thead>
 
     <tbody>
-    <#list calendar.ratesToDays as week>
+    <#list view as week>
         <tr>
             <#list week as day>
                 <td style="color: black; background: ${day.value}; test-align: center;">${day.key}</td>

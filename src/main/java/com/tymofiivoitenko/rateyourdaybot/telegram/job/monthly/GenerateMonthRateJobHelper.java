@@ -71,8 +71,8 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
         var rates = this.rateService.getRatesByPersonIdAndMonth(person.getId(), yearAndMonth);
 
         try {
-            var monthRateView = createMonthRateView(rates, month);
-            var html = createByTemplate(monthRateView);
+            var view = generateRatesToDaysView(rates, month);
+            var html = createByTemplate(view, month);
             var photoTemplate = createPhotoTemplate(person, generateInputStreamFromHtml(html));
 
             bot.execute(photoTemplate);
@@ -83,25 +83,19 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
         }
     }
 
-    private String createByTemplate(MonthRateView monthRateView) throws IOException, TemplateException {
+    private String createByTemplate(List<List<Map.Entry<String, String>>> view, LocalDate month) throws IOException, TemplateException {
         var template = this.freemarkerConfig.getTemplate(TEMPLATE_NAME, "UTF-8");
         var model = new HashMap<>() {{
-            put("calendar", monthRateView);
+            put("monthName", month.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH));
+            put("year", String.valueOf(month.getYear()));
+            put("view", view);
         }};
 
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
     }
 
-    private MonthRateView createMonthRateView(List<Rate> rates, LocalDate month) {
-        MonthRateView calendar = new MonthRateView();
-        calendar.setMonthName(month.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH));
-        calendar.setYear(String.valueOf(month.getYear()));
-        calendar.setRatesToDays(generateRatesToDays(month, rates));
-
-        return calendar;
-    }
-
-    private List<List<Map.Entry<String, String>>> generateRatesToDays(LocalDate date, List<Rate> rates) {
+    // TODO: Refactor
+    private List<List<Map.Entry<String, String>>> generateRatesToDaysView(List<Rate> rates, LocalDate date) {
         List<List<Map.Entry<String, String>>> ratesToDays = new ArrayList<>();
         var dayToColour = rates.stream()
                 .collect(Collectors.toMap(it -> it.getDate().getDayOfMonth(), it -> CalendarScoreColour.valueOf(it.getScore())));
@@ -125,7 +119,7 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
                 }
             }
 
-            if (i == numberOfWeeksInMonth) {
+            if (i == numberOfWeeksInMonth && day.getMonth() == date.getMonth()) {
                 for (int j = day.getDayOfWeek().getValue(); j <= 7; j++) {
                     ratesByWeek.add(Map.entry("", GREY.getHexCode()));
                 }
