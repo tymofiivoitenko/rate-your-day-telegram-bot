@@ -22,7 +22,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.tymofiivoitenko.rateyourdaybot.model.calendar.CalendarScoreColour.GREY;
+import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.UKRAINE_ZONE_ID;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createPhotoTemplate;
 
 
@@ -54,16 +55,9 @@ public class GenerateWeekRateJobHelper extends GenerateViewJobHelper {
 
     private final Configuration freemarkerConfig;
 
-    @PostConstruct
-    public void init() {
-        var person = this.personService.findByIdIn(List.of(1)).get(0);
-        var week = LocalDateTime.now().toLocalDate().minusWeeks(1).with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
-        sendWeekRateView(person, week);
-    }
-
     public void sendWeekRateViews() {
         var persons = this.personService.findAll();
-        var week = LocalDateTime.now().toLocalDate().minusWeeks(1);
+        var week = ZonedDateTime.now(UKRAINE_ZONE_ID).toLocalDate().minusWeeks(1);
         for (Person person : persons) {
             try {
                 sendWeekRateView(person, week);

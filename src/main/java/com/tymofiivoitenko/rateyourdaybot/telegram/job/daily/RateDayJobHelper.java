@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -20,7 +21,7 @@ import java.util.stream.IntStream;
 
 import static com.tymofiivoitenko.rateyourdaybot.telegram.handler.RateDayHandler.RATE_DAY_KEY;
 import static com.tymofiivoitenko.rateyourdaybot.telegram.handler.RateDayHandler.SCORE_KEY;
-import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.SYSTEM_ZONE_ID;
+import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.UKRAINE_ZONE_ID;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createInlineKeyboardButton;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createMessageTemplate;
 
@@ -37,31 +38,27 @@ public class RateDayJobHelper {
 
 
     public void sendRateSurveys() {
-        // TODO SAVE DATE IN UTC FORMAT
-        var now = LocalDateTime.now();
-        var currentHour = ZonedDateTime.of(now, SYSTEM_ZONE_ID).getHour();
+        var zonedNow = ZonedDateTime.now(UKRAINE_ZONE_ID);
+        var currentHour = zonedNow.getHour();
         var currentAskTime = LocalTime.of(currentHour, 0);
         var personIds = this.rateSettingsService.findAllByAskTime(currentAskTime).stream()
                 .map(RateSettings::getPersonId)
                 .toList();
         var persons = this.personService.findByIdIn(personIds);
 
-        log.info("UTC Time: {}, currentAskTime: {}, persons : {}", now, currentAskTime, personIds);
-
+        log.info("Zoned Time: {}, currentAskTime: {}, persons : {}", zonedNow, currentAskTime, personIds);
         persons.stream()
-                .map(person -> createRateKeyBoardMessage(person, now))
+                .map(person -> createRateKeyBoardMessage(person, zonedNow.toLocalDate()))
                 .forEach(message -> this.bot.executeWithExceptionCheck(message));
     }
 
-    public static SendMessage createRateKeyBoardMessage(Person person, LocalDateTime now) {
-        var zonedDate = DateTimeFormatter.ofPattern(DATE_PATTERN_FORMAT)
-                .withZone(SYSTEM_ZONE_ID)
-                .format(now);
+    public static SendMessage createRateKeyBoardMessage(Person person, LocalDate now) {
+        var date = DateTimeFormatter.ofPattern(DATE_PATTERN_FORMAT).format(now);
 
         var inlineKeyboardMarkup = new InlineKeyboardMarkup();
         var inlineKeyboardButtonsRow = IntStream.rangeClosed(1, 5).boxed()
                 .map(String::valueOf)
-                .map(score -> createInlineKeyboardButton(score, RATE_DAY_KEY + zonedDate + SCORE_KEY + score))
+                .map(score -> createInlineKeyboardButton(score, RATE_DAY_KEY + date + SCORE_KEY + score))
                 .toList();
 
         inlineKeyboardMarkup.setKeyboard(List.of(inlineKeyboardButtonsRow));

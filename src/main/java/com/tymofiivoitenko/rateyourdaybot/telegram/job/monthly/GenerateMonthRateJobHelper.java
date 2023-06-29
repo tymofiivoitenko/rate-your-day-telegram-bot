@@ -18,11 +18,10 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.xml.sax.SAXException;
 
-import javax.annotation.PostConstruct;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.tymofiivoitenko.rateyourdaybot.model.calendar.CalendarScoreColour.GREY;
-import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.SYSTEM_ZONE_ID;
+import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.UKRAINE_ZONE_ID;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createPhotoTemplate;
 
 
@@ -54,16 +53,9 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
 
     private final Configuration freemarkerConfig;
 
-    @PostConstruct
-    public void init(){
-        var person = this.personService.findByIdIn(List.of(1)).get(0);
-        var month = LocalDateTime.now().toLocalDate().minusMonths(0).withDayOfMonth(1);
-        sendMonthRate(person, month);
-    }
-
     public void sendMonthRates() {
         var persons = this.personService.findAll();
-        var month = LocalDateTime.now().toLocalDate().minusMonths(1).withDayOfMonth(1);
+        var month = ZonedDateTime.now(UKRAINE_ZONE_ID).toLocalDate().minusMonths(1).withDayOfMonth(1);
 
         for (Person person : persons) {
             try {
@@ -75,9 +67,7 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
     }
 
     private void sendMonthRate(Person person, LocalDate month) {
-        var yearAndMonth = DateTimeFormatter.ofPattern(YEAR_MONTH_DATE_FORMAT)
-                .withZone(SYSTEM_ZONE_ID)
-                .format(month);
+        var yearAndMonth = DateTimeFormatter.ofPattern(YEAR_MONTH_DATE_FORMAT).format(month);
         var rates = this.rateService.getRatesByPersonIdAndMonth(person.getId(), yearAndMonth);
 
         try {

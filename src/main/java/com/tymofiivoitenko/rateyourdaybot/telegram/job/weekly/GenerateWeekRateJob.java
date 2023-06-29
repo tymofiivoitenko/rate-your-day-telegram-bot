@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.SYSTEM_ZONE_ID;
+import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.UKRAINE_ZONE_ID;
 
 
 @Slf4j
@@ -51,12 +51,11 @@ public class GenerateWeekRateJob {
     }
 
     private long calculateDelay() {
-        var localNow = LocalDateTime.now();
-        var zonedNow = ZonedDateTime.of(localNow, SYSTEM_ZONE_ID);
+        var zonedNow = ZonedDateTime.now(UKRAINE_ZONE_ID);
         var zonedNextTarget = zonedNow.with(TemporalAdjusters.next(DayOfWeek.MONDAY)).withHour(9).withMinute(0).withSecond(1);
         var delay = Duration.between(zonedNow, zonedNextTarget).getSeconds() + 1;
 
-        log.info("Current time {}, send WeekRates in {} seconds", zonedNow, delay);
+        log.info("Current zoned time {}, send WeekRates in {} seconds", zonedNow, delay);
         return delay;
     }
 }

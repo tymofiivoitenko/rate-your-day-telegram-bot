@@ -10,13 +10,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.io.InputStream;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 public class TelegramUtil {
 
-    public static final int UKRAINE_UTC_OFFSET = 3;
-
-    public static final ZoneId SYSTEM_ZONE_ID = ZoneOffset.ofHours(UKRAINE_UTC_OFFSET);
+    public static final ZoneId UKRAINE_ZONE_ID = ZoneId.of("Europe/Kiev");
 
     public static DeleteMessage deleteMessage(Person person, Integer messageId) {
         return DeleteMessage.builder()

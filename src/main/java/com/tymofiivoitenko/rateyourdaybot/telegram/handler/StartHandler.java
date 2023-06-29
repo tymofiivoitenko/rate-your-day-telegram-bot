@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.tymofiivoitenko.rateyourdaybot.telegram.handler.RateSettingsHandler.createRateSettingsTemplate;
 import static com.tymofiivoitenko.rateyourdaybot.telegram.job.daily.RateDayJobHelper.createRateKeyBoardMessage;
-import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.SYSTEM_ZONE_ID;
+import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.UKRAINE_ZONE_ID;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createMessageTemplate;
 
 
@@ -28,14 +28,14 @@ public class StartHandler implements Handler {
     @Override
     public List<BotApiMethod<? extends Serializable>> handle(Person person, String messageFromUser, Integer messageId) {
         var messagesToSend = new ArrayList<BotApiMethod<? extends Serializable>>();
-        var currentHour = ZonedDateTime.of(LocalDateTime.now(), SYSTEM_ZONE_ID).getHour();
+        var currentHour = ZonedDateTime.now(UKRAINE_ZONE_ID).getHour();
 
-        if (currentHour < 10) {
+        if (currentHour < 20) {
             messagesToSend.add(createMessageTemplate(person, WELCOME_MESSAGE_MORNING_HOURS));
             messagesToSend.add(createRateSettingsTemplate(person));
         } else {
             messagesToSend.add(createMessageTemplate(person, WELCOME_MESSAGE_LATE_NIGHT_HOURS));
-            messagesToSend.add(createRateKeyBoardMessage(person, LocalDateTime.now()));
+            messagesToSend.add(createRateKeyBoardMessage(person, ZonedDateTime.now(UKRAINE_ZONE_ID).toLocalDate()));
         }
 
         return messagesToSend;
