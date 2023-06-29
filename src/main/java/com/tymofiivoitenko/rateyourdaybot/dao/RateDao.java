@@ -42,6 +42,15 @@ public interface RateDao extends JpaRepository<Rate, Integer> {
     Optional<Rate> getRateByPersonIdAndDate(Integer personId, LocalDate date);
 
     @Query(value = """
+            SELECT person_id
+            FROM rate
+            WHERE person_id IN (:personIds)
+              AND date = :date
+            """, nativeQuery = true
+    )
+    List<Integer> getPersonIdWithRateByDate(List<Integer> personIds, LocalDate date);
+
+    @Query(value = """
              SELECT NOT EXISTS(SELECT 1
                            FROM rate
                            WHERe person_id = :personId)

@@ -38,4 +38,8 @@ public class RateService {
         return this.dao.isFirstRateSurvey(personId);
     }
 
+    public List<Integer> getPersonIdWithRateByDate(List<Integer> personIds, LocalDate date) {
+        return this.dao.getPersonIdWithRateByDate(personIds, date);
+    }
+
 }

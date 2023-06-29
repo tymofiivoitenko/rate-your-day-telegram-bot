@@ -3,6 +3,7 @@ package com.tymofiivoitenko.rateyourdaybot.telegram.job.daily;
 import com.tymofiivoitenko.rateyourdaybot.model.person.Person;
 import com.tymofiivoitenko.rateyourdaybot.model.rate.RateSettings;
 import com.tymofiivoitenko.rateyourdaybot.service.PersonService;
+import com.tymofiivoitenko.rateyourdaybot.service.RateService;
 import com.tymofiivoitenko.rateyourdaybot.service.RateSettingsService;
 import com.tymofiivoitenko.rateyourdaybot.telegram.Bot;
 import lombok.AllArgsConstructor;
@@ -12,11 +13,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 import static com.tymofiivoitenko.rateyourdaybot.telegram.handler.RateDayHandler.RATE_DAY_KEY;
@@ -33,6 +34,8 @@ public class RateDayJobHelper {
     private static final String DATE_PATTERN_FORMAT = "yyyy-MM-dd";
 
     private final Bot bot;
+    private final RateService rateService;
+
     private final PersonService personService;
     private final RateSettingsService rateSettingsService;
 
@@ -45,6 +48,10 @@ public class RateDayJobHelper {
                 .map(RateSettings::getPersonId)
                 .toList();
         var persons = this.personService.findByIdIn(personIds);
+        var personIdWithRatesOnCurrentDay = this.rateService.getPersonIdWithRateByDate(personIds, zonedNow.toLocalDate());
+        persons = persons.stream()
+                .filter(andLogFilteredOutValues(person -> !personIdWithRatesOnCurrentDay.contains(person.getId())))
+                .toList();
 
         log.info("Zoned Time: {}, currentAskTime: {}, persons : {}", zonedNow, currentAskTime, personIds);
         persons.stream()
@@ -66,5 +73,16 @@ public class RateDayJobHelper {
         response.setReplyMarkup(inlineKeyboardMarkup);
 
         return response;
+    }
+
+    private static Predicate<Person> andLogFilteredOutValues(Predicate<Person> predicate) {
+        return person -> {
+            if (predicate.test(person)) {
+                return true;
+            } else {
+                log.warn("Person {} had already received rate survey today", person.getId());
+                return false;
+            }
+        };
     }
 }
