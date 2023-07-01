@@ -55,6 +55,12 @@ public class GenerateWeekRateJobHelper extends GenerateViewJobHelper {
 
     private final Configuration freemarkerConfig;
 
+//    @PostConstruct
+//    private void init() {
+//        var person = this.personService.findByIdIn(List.of(1)).get(0);
+//        sendWeekRateView(person, ZonedDateTime.now(UKRAINE_ZONE_ID).with(TemporalAdjusters.next(DayOfWeek.MONDAY)).toLocalDate().minusWeeks(1));
+//    }
+
     public void sendWeekRateViews() {
         var persons = this.personService.findAll();
         var week = ZonedDateTime.now(UKRAINE_ZONE_ID).toLocalDate().minusWeeks(1);

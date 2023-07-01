@@ -18,6 +18,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.xml.sax.SAXException;
 
+import javax.annotation.PostConstruct;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -52,6 +53,12 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
     private final Bot bot;
 
     private final Configuration freemarkerConfig;
+
+//    @PostConstruct
+//    private void init(){
+//        var person = this.personService.findByIdIn(List.of(1)).get(0);
+//        sendMonthRate(person, ZonedDateTime.now().toLocalDate().minusMonths(1));
+//    }
 
     public void sendMonthRates() {
         var persons = this.personService.findAll();

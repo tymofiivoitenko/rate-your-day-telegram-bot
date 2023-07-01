@@ -1,0 +1,34 @@
+h2.month {
+    font-family: sans-serif;
+    color: orange;
+    text-align: center;
+    font-size: 700%;
+    font-weight: 300;
+}
+table {
+    font-family: sans-serif;
+    border-collapse: collapse;
+    background: white;
+    color: black;
+    table-layout: fixed;
+    width: 100%;
+    bgcolor: "lightgrey";
+    cellspacing: 21;
+    cellpadding: 21;
+}
+
+th {
+    color: white;
+    background: purple;
+    text-align: center;
+    font-size: 400%;
+    height: 240px;
+    font-weight: 700;
+}
+
+td {
+    text-align: center;
+    font-size: 400%;
+    font-weight: 700;
+    height: 240px;
+}
