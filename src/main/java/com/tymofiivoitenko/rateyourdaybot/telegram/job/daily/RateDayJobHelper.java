@@ -30,7 +30,7 @@ import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createMessage
 @Component
 @AllArgsConstructor
 public class RateDayJobHelper {
-    private static final String RATE_DAY_MESSAGE = "Як прошов твій день?";
+    private static final String RATE_DAY_MESSAGE = "Як пройшов твій день?";
     private static final String DATE_PATTERN_FORMAT = "yyyy-MM-dd";
 
     private final Bot bot;
