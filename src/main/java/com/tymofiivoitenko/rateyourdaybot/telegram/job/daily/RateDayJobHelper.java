@@ -39,7 +39,6 @@ public class RateDayJobHelper {
     private final PersonService personService;
     private final RateSettingsService rateSettingsService;
 
-
     public void sendRateSurveys() {
         var zonedNow = ZonedDateTime.now(UKRAINE_ZONE_ID);
         var currentHour = zonedNow.getHour();
@@ -48,6 +47,7 @@ public class RateDayJobHelper {
                 .map(RateSettings::getPersonId)
                 .toList();
         var persons = this.personService.findByIdIn(personIds);
+        // exclude persons, that already participated in survey on current day
         var personIdWithRatesOnCurrentDay = this.rateService.getPersonIdWithRateByDate(personIds, zonedNow.toLocalDate());
         persons = persons.stream()
                 .filter(andLogFilteredOutValues(person -> !personIdWithRatesOnCurrentDay.contains(person.getId())))

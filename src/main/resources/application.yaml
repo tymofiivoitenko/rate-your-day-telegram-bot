@@ -1,6 +1,7 @@
 bot:
   username: RateYourDay
   token: ${BOT_TOKEN}
+  aesKey: ${AES_KEY}
 spring:
   datasource:
     username: ${DB_USER}
