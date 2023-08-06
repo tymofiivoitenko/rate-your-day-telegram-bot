@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,11 +55,12 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
 
     private final Configuration freemarkerConfig;
 
-//    @PostConstruct
-//    private void init(){
-//        var person = this.personService.findByIdIn(List.of(1)).get(0);
-//        sendMonthRate(person, ZonedDateTime.now().toLocalDate().minusMonths(1));
-//    }
+    // for testing purposes on dev environment
+    @PostConstruct
+    private void init(){
+        var person = this.personService.findByIdIn(List.of(1)).get(0);
+        sendMonthRate(person, ZonedDateTime.now().toLocalDate().minusMonths(1));
+    }
 
     public void sendMonthRates() {
         var persons = this.personService.findAll();
@@ -107,7 +109,7 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
         var dayToColour = rates.stream()
                 .collect(Collectors.toMap(it -> it.getDate().getDayOfMonth(), it -> CalendarScoreColour.valueOf(it.getScore())));
         var day = date.withDayOfMonth(1);
-        int numberOfWeeksInMonth = (day.lengthOfMonth() / 7) + 1;
+        int numberOfWeeksInMonth = getWeeksInMonth(date);
 
         for (int i = 1; i <= numberOfWeeksInMonth; i++) {
             var ratesByWeek = new ArrayList<Map.Entry<String, String>>();
@@ -120,14 +122,14 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
             for (int j = day.getDayOfWeek().getValue(); j <= 7; j++) {
                 var colour = dayToColour.getOrDefault(day.getDayOfMonth(), GREY);
                 ratesByWeek.add(Map.entry(String.valueOf(day.getDayOfMonth()), colour.getHexCode()));
-                day = day.plusDays(1);
-                if (day.getMonth() != date.getMonth()) {
+                if (day.plusDays(1).getMonth() != date.getMonth()) {
                     break;
                 }
+                day = day.plusDays(1);
             }
 
             if (i == numberOfWeeksInMonth && day.getMonth() == date.getMonth()) {
-                for (int j = day.getDayOfWeek().getValue(); j <= 7; j++) {
+                for (int j = day.getDayOfWeek().getValue() + 1; j <= 7; j++) {
                     ratesByWeek.add(Map.entry("", GREY.getHexCode()));
                 }
             }
@@ -135,6 +137,25 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
         }
 
         return ratesToDays;
+    }
+
+    private int getWeeksInMonth(LocalDate date) {
+        LocalDate firstDayOfMonth = date.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate lastDayOfMonth = date.with(TemporalAdjusters.lastDayOfMonth());
+
+        int daysInMonth = lastDayOfMonth.getDayOfMonth();
+        int firstDayOfWeek = firstDayOfMonth.getDayOfWeek().getValue();
+        int lastDayOfWeek = lastDayOfMonth.getDayOfWeek().getValue();
+
+        int daysInFirstWeek = 8 - firstDayOfWeek;
+        int remainingDays = daysInMonth - daysInFirstWeek;
+
+        int weeksInMonth = 1 + (remainingDays / 7);
+        if (remainingDays % 7 > 0 || lastDayOfWeek < firstDayOfWeek) {
+            weeksInMonth++;
+        }
+
+        return weeksInMonth;
     }
 
 }

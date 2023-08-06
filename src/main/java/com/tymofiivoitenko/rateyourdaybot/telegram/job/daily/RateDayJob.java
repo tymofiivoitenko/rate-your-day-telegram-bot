@@ -28,7 +28,7 @@ public class RateDayJob {
 
     @PostConstruct
     public void init() {
-       executeNext();
+        executeNext();
     }
 
     private void executeNext() {
