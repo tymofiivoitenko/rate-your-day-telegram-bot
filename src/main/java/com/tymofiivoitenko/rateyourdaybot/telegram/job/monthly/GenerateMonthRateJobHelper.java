@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 import static com.tymofiivoitenko.rateyourdaybot.model.calendar.CalendarScoreColour.GREY;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.UKRAINE_ZONE_ID;
+import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createMessageTemplate;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createPhotoTemplate;
 
 
@@ -42,6 +43,8 @@ import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.createPhotoTe
 @Component
 @AllArgsConstructor
 public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
+
+    private static final String SORRY_MESSAGE = "шось той календарик поплавило (ех, всі ми..). ось ваші результати за липень в нормальному вигляді " + new StringBuilder().appendCodePoint(0x1F446);
 
     private static final String TEMPLATE_NAME = "rates-month-view.ftl";
 
@@ -56,11 +59,15 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
     private final Configuration freemarkerConfig;
 
     // For testing purposes on dev environment
-//    @PostConstruct
-//    private void init(){
-//        var person = this.personService.findByIdIn(List.of(1)).get(0);
-//        sendMonthRate(person, ZonedDateTime.now().toLocalDate().minusMonths(3));
-//    }
+    @PostConstruct
+    private void init() throws TelegramApiException {
+        var persons = this.personService.findAll();
+        for (Person person : persons) {
+            sendMonthRate(person, ZonedDateTime.now().toLocalDate().minusMonths(1));
+            var message = createMessageTemplate(person, SORRY_MESSAGE);
+            bot.execute(message);
+        }
+    }
 
     public void sendMonthRates() {
         var persons = this.personService.findAll();
