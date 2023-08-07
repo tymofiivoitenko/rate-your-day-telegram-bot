@@ -55,12 +55,12 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
 
     private final Configuration freemarkerConfig;
 
-    // for testing purposes on dev environment
-    @PostConstruct
-    private void init(){
-        var person = this.personService.findByIdIn(List.of(1)).get(0);
-        sendMonthRate(person, ZonedDateTime.now().toLocalDate().minusMonths(1));
-    }
+    // For testing purposes on dev environment
+//    @PostConstruct
+//    private void init(){
+//        var person = this.personService.findByIdIn(List.of(1)).get(0);
+//        sendMonthRate(person, ZonedDateTime.now().toLocalDate().minusMonths(3));
+//    }
 
     public void sendMonthRates() {
         var persons = this.personService.findAll();
