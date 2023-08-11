@@ -73,7 +73,7 @@ public class GenerateWeekRateJobHelper extends GenerateViewJobHelper {
         }
     }
 
-    private void sendWeekRateView(Person person, LocalDate week) {
+    public void sendWeekRateView(Person person, LocalDate week) {
         if (week.getDayOfWeek() != DayOfWeek.MONDAY) {
             throw new IllegalStateException("First day of provided week is not a Monday");
         }

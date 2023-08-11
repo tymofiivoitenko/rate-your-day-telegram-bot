@@ -50,6 +50,7 @@ public class GenerateWeekRateJob {
         this.executorService.schedule(task, delay, TimeUnit.SECONDS);
     }
 
+    // TODO FIX - calculate closest time, instead of next monday
     private long calculateDelay() {
         var zonedNow = ZonedDateTime.now(UKRAINE_ZONE_ID);
         var zonedNextTarget = zonedNow.with(TemporalAdjusters.next(DayOfWeek.MONDAY)).withHour(9).withMinute(0).withSecond(1);
