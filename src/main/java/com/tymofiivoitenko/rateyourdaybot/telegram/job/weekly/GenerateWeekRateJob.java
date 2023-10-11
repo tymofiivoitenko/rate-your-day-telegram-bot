@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.tymofiivoitenko.rateyourdaybot.util.DateUtil.calculateDelayTillNextWeekRate;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.UKRAINE_ZONE_ID;
 
 
@@ -45,19 +46,12 @@ public class GenerateWeekRateJob {
             helper.sendWeekRateViews();
             executeNext();
         };
-        var delay = calculateDelay();
+        var now = ZonedDateTime.now(UKRAINE_ZONE_ID);
+        var delay = calculateDelayTillNextWeekRate(now);
+
+        log.info("Current zoned time {}, send WeekRates in {} seconds", now, delay);
 
         this.executorService.schedule(task, delay, TimeUnit.SECONDS);
-    }
-
-    // TODO FIX - calculate closest time, instead of next monday
-    private long calculateDelay() {
-        var zonedNow = ZonedDateTime.now(UKRAINE_ZONE_ID);
-        var zonedNextTarget = zonedNow.with(TemporalAdjusters.next(DayOfWeek.MONDAY)).withHour(9).withMinute(0).withSecond(1);
-        var delay = Duration.between(zonedNow, zonedNextTarget).getSeconds() + 1;
-
-        log.info("Current zoned time {}, send WeekRates in {} seconds", zonedNow, delay);
-        return delay;
     }
 }
 

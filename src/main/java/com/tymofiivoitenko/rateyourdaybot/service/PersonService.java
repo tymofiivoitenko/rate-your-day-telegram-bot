@@ -5,6 +5,7 @@ import com.tymofiivoitenko.rateyourdaybot.model.person.Person;
 import com.tymofiivoitenko.rateyourdaybot.util.AESUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -33,7 +34,7 @@ public class PersonService {
     }
 
     public List<Person> findAll() {
-        return this.dao.findAll();
+        return this.dao.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     public List<Person> findByIdIn(List<Integer> ids) {

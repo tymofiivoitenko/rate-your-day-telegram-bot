@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.tymofiivoitenko.rateyourdaybot.util.DateUtil.calculateDelayTillNextRateDay;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.UKRAINE_ZONE_ID;
 
 @Slf4j
@@ -36,17 +37,11 @@ public class RateDayJob {
             helper.sendRateSurveys();
             executeNext();
         };
-        var delay = calculateDelay();
-
-        this.executorService.schedule(task, delay, TimeUnit.SECONDS);
-    }
-
-    private long calculateDelay() {
         var zonedNow = ZonedDateTime.now(UKRAINE_ZONE_ID);
-        var zonedNextTarget = zonedNow.plusHours(1).withMinute(0).withSecond(0).withNano(0);
-        var delay = Duration.between(zonedNow, zonedNextTarget).getSeconds() + 1;
+        var delay = calculateDelayTillNextRateDay(zonedNow);
 
         log.info("Current zoned time: {}. Send RateSurveys in {} seconds", zonedNow, delay);
-        return delay;
+
+        this.executorService.schedule(task, delay, TimeUnit.SECONDS);
     }
 }

@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.tymofiivoitenko.rateyourdaybot.util.DateUtil.calculateDelayTillNextMonthRate;
 import static com.tymofiivoitenko.rateyourdaybot.util.TelegramUtil.UKRAINE_ZONE_ID;
 
 
@@ -42,18 +43,11 @@ public class GenerateMonthRateJob {
             helper.sendMonthRates();
             executeNext();
         };
-        var delay = calculateDelay();
+        var now = ZonedDateTime.now(UKRAINE_ZONE_ID);
+        var delay = calculateDelayTillNextMonthRate(now);
 
+        log.info("Current zoned time {}, sending MonthRates in {} seconds. ", now, delay);
         this.executorService.schedule(task, delay, TimeUnit.SECONDS);
-    }
-
-    private long calculateDelay() {
-        var zonedNow = ZonedDateTime.now(UKRAINE_ZONE_ID);
-        var zonedNextTarget = zonedNow.plusMonths(1).withDayOfMonth(1).withHour(11).withMinute(0).withSecond(0).withNano(0);
-        var delay = Duration.between(zonedNow, zonedNextTarget).getSeconds() + 1;
-
-        log.info("Current zoned time {}, send MonthRates in {} seconds", zonedNow, delay);
-        return delay;
     }
 }
 

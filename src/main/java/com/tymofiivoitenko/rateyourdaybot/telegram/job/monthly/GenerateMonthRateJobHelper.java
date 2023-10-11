@@ -75,7 +75,7 @@ public class GenerateMonthRateJobHelper extends GenerateViewJobHelper {
         }
     }
 
-    private void sendMonthRate(Person person, LocalDate month) {
+    public void sendMonthRate(Person person, LocalDate month) {
         var yearAndMonth = DateTimeFormatter.ofPattern(YEAR_MONTH_DATE_FORMAT).format(month);
         var rates = this.rateService.getRatesByPersonIdAndMonth(person.getId(), yearAndMonth);
 
