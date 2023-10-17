@@ -50,11 +50,5 @@ public interface RateDao extends JpaRepository<Rate, Integer> {
     )
     List<Integer> getPersonIdWithRateByDate(List<Integer> personIds, LocalDate date);
 
-    @Query(value = """
-             SELECT NOT EXISTS(SELECT 1
-                           FROM rate
-                           WHERe person_id = :personId)
-            """, nativeQuery = true
-    )
-    boolean isFirstRateSurvey(Integer personId);
+    boolean existsByPersonId(Integer personId);
 }

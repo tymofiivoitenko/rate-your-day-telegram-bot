@@ -35,7 +35,7 @@ public class RateService {
     }
 
     public boolean isFirstRateSurvey(Integer personId) {
-        return this.dao.isFirstRateSurvey(personId);
+        return !this.dao.existsByPersonId(personId);
     }
 
     public List<Integer> getPersonIdWithRateByDate(List<Integer> personIds, LocalDate date) {

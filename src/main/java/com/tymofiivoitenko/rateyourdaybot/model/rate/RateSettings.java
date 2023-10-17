@@ -19,8 +19,7 @@ import java.time.LocalTime;
 public class RateSettings {
 
     @Id
-    @SequenceGenerator(name = "rate_settings_id_seq", sequenceName = "rate_settings_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rate_settings_id_seq")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "person_id")

@@ -6,11 +6,11 @@ spring:
   datasource:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: com.mysql.jdbc.Driver
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.MySQL5Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   sql:
     init:
       continue-on-error: true

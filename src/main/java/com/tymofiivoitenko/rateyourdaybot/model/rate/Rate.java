@@ -21,8 +21,7 @@ import java.time.LocalDateTime;
 public class Rate {
 
     @Id
-    @SequenceGenerator(name = "rate_id_seq", sequenceName = "rate_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rate_id_seq")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "person_id")
