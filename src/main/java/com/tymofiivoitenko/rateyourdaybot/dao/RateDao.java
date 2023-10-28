@@ -18,8 +18,7 @@ public interface RateDao extends JpaRepository<Rate, Integer> {
             FROM rate
             WHERE person_id = :personId
               AND to_char(date, 'YYYY-MM') = :yearAndMonth
-            """, nativeQuery = true
-    )
+            """, nativeQuery = true)
     List<Rate> getRatesByPersonIdAndMonth(Integer personId, String yearAndMonth);
 
     @Query(value = """
@@ -28,8 +27,7 @@ public interface RateDao extends JpaRepository<Rate, Integer> {
             WHERE person_id = :personId
               AND date >= :startDate
               AND date <= :endDate
-            """, nativeQuery = true
-    )
+            """, nativeQuery = true)
     List<Rate> getRatesByPersonIdBetweenDates(Integer personId, LocalDate startDate, LocalDate endDate);
 
     @Query(value = """
@@ -37,8 +35,7 @@ public interface RateDao extends JpaRepository<Rate, Integer> {
             FROM rate
             WHERE person_id = :personId
               AND date = :date
-            """, nativeQuery = true
-    )
+            """, nativeQuery = true)
     Optional<Rate> getRateByPersonIdAndDate(Integer personId, LocalDate date);
 
     @Query(value = """
@@ -46,8 +43,7 @@ public interface RateDao extends JpaRepository<Rate, Integer> {
             FROM rate
             WHERE person_id IN (:personIds)
               AND date = :date
-            """, nativeQuery = true
-    )
+            """, nativeQuery = true)
     List<Integer> getPersonIdWithRateByDate(List<Integer> personIds, LocalDate date);
 
     boolean existsByPersonId(Integer personId);
