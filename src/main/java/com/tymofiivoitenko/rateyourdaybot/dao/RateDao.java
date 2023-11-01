@@ -17,7 +17,7 @@ public interface RateDao extends JpaRepository<Rate, Integer> {
             SELECT *
             FROM rate
             WHERE person_id = :personId
-              AND to_char(date, 'YYYY-MM') = :yearAndMonth
+              AND DATE_FORMAT(date, '%Y-%m') = :yearAndMonth
             """, nativeQuery = true)
     List<Rate> getRatesByPersonIdAndMonth(Integer personId, String yearAndMonth);
 
